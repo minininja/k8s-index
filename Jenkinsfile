@@ -20,8 +20,8 @@ pipeline {
 
     tools {
         // Uncomment and configure tools as needed
-        maven '3.9.12'
-        jdk 'open jdk 21'
+        maven 'maven-3.9.12'
+        jdk 'jdk-21'
     }
 
     stages {
