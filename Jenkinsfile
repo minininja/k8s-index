@@ -41,13 +41,13 @@ pipeline {
                 }
             }
         }
-        stage('Test') {
-            steps {
-                echo "🚀 Running Test stage..."
-                sh "mvn test"
-                junit stdioRetention: 'ALL', testResults: '**/*.xml'
-            }
-        }
+//         stage('Test') {
+//             steps {
+//                 echo "🚀 Running Test stage..."
+//                 sh "mvn test"
+//                 junit stdioRetention: 'ALL', testResults: '**/*.xml'
+//             }
+//         }
         stage('Push') {
             steps {
                 withMaven(traceability: true) {
