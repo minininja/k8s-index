@@ -27,7 +27,7 @@ pipeline {
     stages {
         stage('Checkcout') {
             steps {
-                checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[credentialsId: 'jenkins', url: 'git@github.com:minininja/k8s-index.git']])
+                checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[credentialsId: '6b82eb9b-9547-4546-9d98-6d66891cd835', url: 'git@github.com:minininja/k8s-index.git']])
             }
         }
         stage('Build') {
