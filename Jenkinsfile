@@ -50,7 +50,7 @@ pipeline {
 //         }
         stage('Push') {
             steps {
-                withCredentials([usernamePassword:(credentialsId: '03aa141b-3b8a-41ad-8043-39cc348fbf43', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME'))]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-login-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME --password-stdin <<< "$DOCKER_PASSWORD"'
                     withMaven(traceability: true) {
                         sh 'mvn package -DskipTests -Dquarkus.container-image.group=mikej091 -Dquarkus.jib.platforms=linux/amd64,linux/arm64/v8 -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true'
