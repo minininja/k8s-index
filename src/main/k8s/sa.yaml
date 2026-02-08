@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: director-service-account
+automountServiceAccountToken: true
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: namespace-and-service-access-cluster-role
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "namespaces", "services"]
+  verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: namespace-and-service-access-cluster-role-binding
+subjects:
+- kind: ServiceAccount
+  name: director-service-account
+  namespace: director
+roleRef:
+  kind: ClusterRole
+  name: namespace-and-service-access-cluster-role
+  apiGroup: rbac.authorization.k8s.io
