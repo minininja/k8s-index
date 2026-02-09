@@ -38,7 +38,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: '03aa141b-3b8a-41ad-8043-39cc348fbf43', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     withMaven(mavenSettingsConfig: 'global-maven-settings') {
-                        sh 'mvn package -DskipTests -Dquarkus.container-image.build=true -Dquarkus.container-image.platforms=linux/arm64 -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'
+                        sh 'mvn package -DskipTests -Dquarkus.container-image.build=true -Dquarkus.jib.platforms=linux/arm64 -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'
                         // sh 'mvn package -DskipTests -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.platforms=linux/arm64 -Dquarkus.container-image.build=true -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'
                     }
                 }
