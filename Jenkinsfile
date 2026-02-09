@@ -29,14 +29,18 @@ pipeline {
         stage('Build') {
             steps {
                 echo "🚀 Running Build stage..."
-                sh "mvn -DskipTests clean package"
+                withMaven(mavenSettingsConfig: 'global-maven-settings') {
+                    sh "mvn -DskipTests clean package"
+                }
             }
         }
         stage('Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '03aa141b-3b8a-41ad-8043-39cc348fbf43', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'mvn package -DskipTests -Dquarkus.container-image.build=true -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'
-                    // sh 'mvn package -DskipTests -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'
+                    withMaven(mavenSettingsConfig: 'global-maven-settings') {
+                        sh 'mvn package -DskipTests -Dquarkus.container-image.build=true -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'
+                        // sh 'mvn package -DskipTests -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'
+                    }
                 }
             }
         }
