@@ -38,6 +38,13 @@ pipeline {
                     sh 'mvn package -DskipTests -Dquarkus.container-image.build=true -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'                }
             }
         }
+        stage('Apply Kubernetes files') {
+           withKubeConfig([credentialsId: 'user1', serverUrl: 'https://api.k8s.my-company.com']) {
+              sh 'kubectl apply -f src/main/k8s/sa.yaml'
+              sh 'kubectl apply -f src/main/k8s/deployment.yaml'
+              sh 'kubectl apply -f src/main/k8s/service.yaml'
+           }
+        }
     }
 
     post {
