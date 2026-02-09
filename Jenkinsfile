@@ -2,10 +2,6 @@ pipeline {
     agent {
         kubernetes {
             cloud 'kubernetes'
-//             workspaceVolume dynamicPVC (
-//                 accessModes: 'ReadWriteOnce',
-//                 requestsSize: '1Gi'
-//             )
 		}
     }
 
@@ -19,7 +15,6 @@ pipeline {
     }
 
     tools {
-        // Uncomment and configure tools as needed
         maven 'maven-3.9.12'
         jdk 'jdk-21'
     }
@@ -27,35 +22,20 @@ pipeline {
     stages {
         stage('Checkcout') {
             steps {
-                checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[credentialsId: '6b82eb9b-9547-4546-9d98-6d66891cd835', url: 'git@github.com:minininja/k8s-index.git']])
+                checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[credentialsId: '6b82eb9b-9547-4546-9d98-6d66891cd835', url: 'git@github.com:minininja/k8s-index.git'
+                ]])
             }
         }
         stage('Build') {
             steps {
                 echo "🚀 Running Build stage..."
-                withMaven(
-                    traceability: true
-                ) {
-                    // All steps inside this block will use the specified global settings
-                    sh "mvn -DskipTests clean package"
-                }
+                sh "mvn -DskipTests clean package"
             }
         }
-//         stage('Test') {
-//             steps {
-//                 echo "🚀 Running Test stage..."
-//                 sh "mvn test"
-//                 junit stdioRetention: 'ALL', testResults: '**/*.xml'
-//             }
-//         }
         stage('Push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-login-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'docker login -u $DOCKER_USERNAME --password-stdin <<< "$DOCKER_PASSWORD"'
-                    withMaven(traceability: true) {
-                        sh 'mvn package -DskipTests -Dquarkus.container-image.group=mikej091 -Dquarkus.jib.platforms=linux/amd64,linux/arm64/v8 -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true'
-                    }
-                }
+                withCredentials([usernamePassword(credentialsId: '03aa141b-3b8a-41ad-8043-39cc348fbf43', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'mvn package -DskipTests -Dquarkus.container-image.build=true -Dquarkus.container-image.builder=jib -Dquarkus.container-image.push=true -Dquarkus.container-image.group=$DOCKER_USERNAME -Dquarkus.container-image.name=director -Dquarkus.container-image.username=$DOCKER_USERNAME -Dquarkus.container-image.password=$DOCKER_PASSWORD'                }
             }
         }
     }
