@@ -42,9 +42,9 @@ pipeline {
         stage('Apply Kubernetes files') {
            steps {
                withKubeConfig([credentialsId: 'user1', serverUrl: 'https://api.k8s.my-company.com']) {
-                    sh 'kubectl apply -f src/main/k8s/sa.yaml'
-                    sh 'kubectl apply -f src/main/k8s/deployment.yaml'
-                    sh 'kubectl apply -f src/main/k8s/service.yaml'
+                    sh 'kubectl apply -n director -f src/main/k8s/sa.yaml'
+                    sh 'kubectl apply -n director -f src/main/k8s/deployment.yaml'
+                    sh 'kubectl apply -n director -f src/main/k8s/service.yaml'
                }
            }
         }
